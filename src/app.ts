@@ -7,6 +7,7 @@ export const app = fastify()
 app.register(UsersRoute, {
   prefix: 'users',
 })
+
 app.register(MealsRoute, {
-  prefix: 'meals',
+  prefix: 'users/:userId/meals',
 })
