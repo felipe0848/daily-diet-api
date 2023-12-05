@@ -18,4 +18,9 @@ export async function UsersRoute(app: FastifyInstance) {
 
     return reply.status(201).send(`Create new user!`)
   })
+
+  app.get('/', async () => {
+    const users = await knex('users').select()
+    return { users }
+  })
 }
