@@ -14,7 +14,23 @@ export async function MealsRoute(app: FastifyInstance) {
 
     return { meals }
   })
+  app.get(
+    '/:mealId',
+    { preHandler: [checkUserExists, checkMealExists] },
+    async (request, reply) => {
+      const DeleteMealRequestParams = z.object({
+        userId: z.string().uuid(),
+        mealId: z.string().uuid(),
+      })
+      const { userId, mealId } = DeleteMealRequestParams.parse(request.params)
 
+      const meal = await knex('meals')
+        .where({ id: mealId, user_id: userId })
+        .select()
+
+      return { meal }
+    },
+  )
   app.post('/', { preHandler: [checkUserExists] }, async (request, reply) => {
     const CreateMealRequestParams = z.object({ userId: z.string().uuid() })
     const { userId } = CreateMealRequestParams.parse(request.params)
@@ -87,7 +103,23 @@ export async function MealsRoute(app: FastifyInstance) {
         .update(updatedMeal)
         .where({ id: mealId, user_id: userId })
 
-      return reply.status(200).send()
+      return reply.status(204).send()
+    },
+  )
+
+  app.delete(
+    '/:mealId',
+    { preHandler: [checkUserExists, checkMealExists] },
+    async (request, reply) => {
+      const DeleteMealRequestParams = z.object({
+        userId: z.string().uuid(),
+        mealId: z.string().uuid(),
+      })
+      const { userId, mealId } = DeleteMealRequestParams.parse(request.params)
+
+      await knex('meals').where({ id: mealId, user_id: userId }).del()
+
+      return reply.status(204).send()
     },
   )
 }
