@@ -1,9 +1,6 @@
 import { app } from './app'
+import { env } from './env'
 
-app.get('/', (request, reply) => {
-  return reply.status(200).send('hello')
-})
-
-app.listen({ port: 3333 }, () => {
-  console.log('listening on http://localhost:3333/')
+app.listen({ port: env.PORT }, () => {
+  console.log(`Server listening on http://localhost:${env.PORT}/`)
 })
